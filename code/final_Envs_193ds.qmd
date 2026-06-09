@@ -1,0 +1,176 @@
+---
+title: "final_Envs_193ds"
+format: pdf
+---
+
+```{r}
+#| message: false
+#| warning: false
+# loading packages
+library(tidyverse) # general use
+library(here) # file organization
+library(janitor) # cleaning data frames
+library(readxl) # reading excel files
+library(scales) # modifying axis labels
+library(ggeffects) # getting model predictions
+library(MuMIn) # model selection
+library(DHARMa) # checking diagnostics 
+# reading in data
+nest <- read_csv(here("data", "nest_data_final.csv"))
+```
+
+# Problem 1. Research writing
+
+## a. Transparent statistical methods
+
+
+**Part 1: generalized linear model**
+
+Part 2: chi-square
+
+- finding if there is a relationship between two categorical variables
+
+## b. Suggestions for rewriting??
+
+variable: native plant cover
+## c. Further analysis
+
+# Problem 2. Data analysis
+## a. Clean and wrangle - *make sure to revisit reordering*
+```{r}
+# creating new object to clean and wrangle data
+nests_clean <- nest |> 
+  # filtering to only include ant species C. mimosae, C. sjostedti, and C. nigriceps
+   filter(ant_species %in% c("RRB", "AB", "BBR")) |> 
+  # creating new column with full scientific name
+  mutate(species_name = recode_values(
+    ant_species,
+    "RRB" ~ "Crematogaster mimosae",
+    "AB" ~ "Crematogaster sjostedti",
+    "BBR" ~ "Crematogaster nigriceps"
+    )) |> 
+  # reordering ant species 
+  mutate(species_name = as_factor(species_name),
+         species_name = fct_relevel(species_name,
+                                    "Crematogaster sjostedti",
+                                    "Crematogaster mimosae",
+                                    "Crematogaster nigriceps")) |>
+# selecting only columns representing tree height, 
+# if a bird nest is in tree, ant species, and ant species name
+    select(height_cm, case_control, 
+      species_name, ant_species) 
+# checking structure of data frame
+str(nests_clean)
+
+slice_sample(nests_clean, # displaying nests clean data fram
+             n = 10) # 10 rows
+```
+
+
+## b. Response variable
+
+The 1s in the column case control means that the tree contained a nest and the 0s mean that there was an "available" for the birds to nest in. The researchers identified available trees by identifying the four nearest neighboring trees above 0.5 m tall to trees with nests. 
+
+## c. Purpose of study
+
+### Tree height
+
+Acacia tree height is a continuous variable
+
+
+
+### Acacia Ant species
+
+## d. Table of models
+
+| Model Number | Tree Height | Ant Species |   Model Description              |
+|--------------|:-----------:|:-----------:|:--------------------------------:|
+|1             |      X      |      X      | all predictors (no interaction)  |
+|2             |      X      |      X      | all predictors (interaction term)|           
+
+## e. Run the models
+
+```{r}
+#| output: false
+# model 1: no interaction, case control as a function of tree height and 
+# ant species
+model1 <- glm( 
+  case_control ~ height_cm + species_name,
+  data = nests_clean, # data frame: nests clean
+  family = binomial) # binomial data
+
+# model 2: interaction term, case control as a function of tree height and ant
+# species
+model2 <- glm(
+  case_control ~ height_cm * species_name,
+  data = nests_clean, # data frame: nests clean
+  family = binomial) # binomial data
+```
+
+
+## f. Select the best model
+```{r}
+# using Akaike's Information Criterion (AIC) to choose best model
+AICc(
+  model1, # model 1
+  model2 # model 2
+) |> 
+  arrange(AICc)
+```
+
+The best model as determined by Akaike's Information Criterion (AIC) is model 2 as it explains the most variation in the response variable with the fewest predictor variables.
+
+## g. Check the diagnostics
+
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+# checking diagnostics for model using DHARMa package
+plot(simulateResiduals(model2))
+```
+
+
+## h. Visualize the model predictions
+
+
+
+## i. Write a caption for your figure.
+
+## j. Calculate model predictions
+
+## k. Interpret your results
+
+# Problem 3. Affective and exploratory visualizations
+
+## a. Comparing visualizations
+
+- For the affective visualization, I included all the different variables regarding my data versus the exploratory visualizations isolated two variables. Additionally, for the explanatory visualization, I displayed median and IQR but that was not displayed on my affective visualization. 
+
+- Both of my visualizations utilize color to differentiate categorical variables such as work location. Additionally, both visualizations represent all 30 observations, just represented differently. 
+
+- The main pattern that is visible in both visualizations is that when I worked at school, I had a higher productivity level than when I worked at any other place like the cafe or home. **FINISH THIS BASED ON AFFECTIVE VISUALIZATION**
+
+- The main feedback I got in workshop was to make the variables more clear and be more clear with the overarching message of the data. I implemented this feedback by making the cloud size dependent on productivity level, so it was clear to see if there was a relationship between my variables and productivity levels. The decision to kept the suggestion was based on the fact that it helped convey the message behind the results better and was more clear for the reader. 
+
+## b. Designing an analysis
+
+- single linear regression between sleep mins and productivity level
+      - ask about sleep mins because it can be continuous but i measured it in discrete?
+    
+
+## c. Check any assumptions and run your analysis
+
+## d. Create a visualization
+
+## e. Write a caption
+
+## f. Write about your results
+
+
+
+
+
+
+
+
+
