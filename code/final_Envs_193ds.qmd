@@ -120,6 +120,8 @@ AICc(
 
 The best model as determined by Akaike's Information Criterion (AIC) is model 2 as it explains the most variation in the response variable with the fewest predictor variables.
 
+**ask about summary**
+
 ## g. Check the diagnostics
 
 ```{r}
@@ -129,8 +131,66 @@ The best model as determined by Akaike's Information Criterion (AIC) is model 2 
 plot(simulateResiduals(model2))
 ```
 
+**describe output**
+
+- no significant outliers
+- 
 
 ## h. Visualize the model predictions
+**ask ab data be pretified**
+
+```{r}
+preds <- ggpredict(
+  model2,
+  terms = c("height_cm", "species_name")) |> 
+  rename(height_cm = x,
+         species_name = group)
+```
+
+```{r}
+# base layer: ggplot
+ggplot(data = nests_clean,
+       mapping = aes(x = height_cm,
+                     y = case_control )) +
+  geom_point(aes(color = species_name),
+             shape = 21,
+             alpha = 0.4) +
+  geom_line(data = preds,
+            mapping = aes(x = height_cm,
+                          y = predicted,
+                          color = species_name),
+            linewidth = 1) +
+  geom_ribbon(data = preds,
+              mapping = aes(
+                        y = predicted,
+                        ymin = conf.low,
+                        ymax = conf.high,
+                        fill = species_name),
+               alpha = 0.1) +
+  facet_wrap(~ species_name,
+             labeller = labeller(
+             species_name = c(
+                 "Crematogaster sjostedti" = "C. sjostedti",
+                 "Crematogaster mimosae"   = "C. mimosae",
+                 "Crematogaster nigriceps" = "C. nigriceps"))) +
+  scale_color_manual(values = c(
+    "Crematogaster sjostedti" = "seagreen4",
+    "Crematogaster mimosae" = "purple", 
+    "Crematogaster nigriceps" = "skyblue")) +
+scale_fill_manual(values = c(
+  "Crematogaster sjostedti" = "seagreen4",
+  "Crematogaster mimosae"   = "purple",
+  "Crematogaster nigriceps" = "skyblue")) +
+scale_x_continuous(limits = c(0, 600), # set x axis to full range of tree height
+                   breaks = c(0, 200, 400, 600)) +
+labs (x = "Tree height (cm)",
+      y = "Probability of nest occurrence") +
+# changed theme from default
+# removed legend
+theme(legend.position = "none") +
+theme(panel.grid = element_blank(),
+      panel.background = element_blank())
+```
 
 
 
