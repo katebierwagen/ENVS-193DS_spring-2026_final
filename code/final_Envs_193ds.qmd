@@ -1,6 +1,8 @@
 ---
-title: "final_Envs_193ds"
+title: "ENVS 193DS Final"
 format: pdf
+author: "Kate Bierwagen"
+date: "2026-06-09"
 ---
 
 ```{r}
@@ -15,27 +17,34 @@ library(scales) # modifying axis labels
 library(ggeffects) # getting model predictions
 library(MuMIn) # model selection
 library(DHARMa) # checking diagnostics 
+
 # reading in data
 nest <- read_csv(here("data", "nest_data_final.csv"))
+
+# reading in personal data:
+mydata <- read_csv(here("data", "stats-personal-data_05_23.csv"))
 ```
 
 # Problem 1. Research writing
 
 ## a. Transparent statistical methods
 
+In part 1, they used a generalized linear model to see if native percent cover (water edge) influences probability of American Avocet microhabitat use. In part 2, they used a chi-square test to see if there was a relationship between two categorical variables, bird species (American Avocet, Forster’s Tern, Black-necked Stilt) and habitat type (managed pond, non-tidal marsh, salt pond, tidal marsh, or tidal mudflat).
 
-**Part 1: generalized linear model**
 
-Part 2: chi-square
+## b. Suggestions for rewriting
 
-- finding if there is a relationship between two categorical variables
+**Part 1:** Distance to water edge predicts the probability of American Avocet microhabitat use, suggesting that proximity to the water edge influences where American Avocets choose their habitats.
 
-## b. Suggestions for rewriting??
+**Part 2:** The distribution of bird species (American Avocet, Forster’s Tern, Black-necked Stilt) differed significantly across habitat (managed pond, non-tidal marsh, salt pond, tidal marsh, or tidal mudflat), indicating that each species had a preference for habitat. 
 
-variable: native plant cover
 ## c. Further analysis
 
+One additional variable that could influence the probability of American Avocet microhabitat use is water temperature measured in degrees Celsius using a temperature probe at each survey point. This variable is continuous and could influence the amount of available prey for American Avocets to forage on. Higher temperatures could lead to less American Avocet habitat use as there would be less prey. 
+
+
 # Problem 2. Data analysis
+
 ## a. Clean and wrangle 
 ```{r}
 # creating new object to clean and wrangle data
@@ -62,7 +71,8 @@ nests_clean <- nest |>
 # checking structure of data frame
 str(nests_clean)
 
-slice_sample(nests_clean, # displaying nests clean data fram
+# displaying nests clean data fram
+slice_sample(nests_clean, 
              n = 10) # 10 rows
 ```
 
@@ -78,11 +88,14 @@ The 1s in the column case control means that the tree contained a nest and the 0
 Whistling thorn tree height, measured in centimeters, is a continuous variable. The probability of bird nest occurrence would likely increase as tree height increases since there higher trees would be less accessible to ground-level predators. This information was found in paragraphs 3 and 4 of the introduction section. 
 
 
-### Acacia Ant species
+### Acacia Ant species!!!
 
 Acacia ant species is a categorical variable with three different leveles in our model (*C. mimosea*, *C. nigriceps*, and *C. sjostedti*). Each ant species provides different benefits to the tree and ecosystem. Ant species, like *C. mimosae* and *C. nigriceps*, that defend against herbivores greatly will probably increase the probability of nest occurrence as there are less large predators for the bird nests. This information was found in paragraphs 2 and 3 in the introduction section. 
 
 **edit**
+
+
+
 ## d. Table of models
 
 | Model Number | Tree Height | Ant Species |   Model Description              |
@@ -117,6 +130,7 @@ AICc(
   model1, # model 1
   model2 # model 2
 ) |> 
+  # arange by decreasing model
   arrange(AICc)
 ```
 
@@ -137,7 +151,7 @@ summary(model2)
 plot(simulateResiduals(model2))
 ```
 
-From the residuals, the data is uniformally distributed as the plot follows the reference line and outliers do not have significant influence on the data since the lines follow the bands and are relatively flat. 
+From the residuals, the data is uniformly distributed as the plot follows the reference line and outliers do not have significant influence on the data since the lines follow the bands and are relatively flat. 
 
 ## h. Visualize the model predictions
 
@@ -150,31 +164,39 @@ preds <- ggpredict(
 ```
 
 ```{r}
-# base layer: ggplot
+# base layer: ggplot using cleaned nest ddata
 ggplot(data = nests_clean,
-       mapping = aes(x = height_cm,
-                     y = case_control )) +
-  geom_point(aes(color = species_name),
-             shape = 21,
-             alpha = 0.5) + 
+       mapping = aes(x = height_cm, # x- axis: tree height
+                     y = case_control )) + # y axis: nest occurrence
+  # first layer: points
+  geom_point(aes(color = species_name), # coloring by ant species
+             shape = 21, # open circles
+             alpha = 0.5) + # making circles transparent
+  # second layer: line using model predictions
   geom_line(data = preds,
-            mapping = aes(x = height_cm,
-                          y = predicted,
-                          color = species_name),
-            linewidth = 1) +
+            mapping = aes(x = height_cm, # x-axis: tree height
+                          y = predicted, # y-axis: probability of nest 
+# occurrence
+                          color = species_name), # categorical variable:
+# ant species
+            linewidth = 1) + # making line thicker
+  # third layer: model predictions with 95% CI
   geom_ribbon(data = preds,
               mapping = aes(
-                        y = predicted,
-                        ymin = conf.low,
-                        ymax = conf.high,
-                        fill = species_name),
-               alpha = 0.1) +
+                        y = predicted,# y- axis: probability of nest occurrence
+                        ymin = conf.low, # upper 95% CI
+                        ymax = conf.high, # lower 95% CI
+                        fill = species_name), # filling by ant species
+               alpha = 0.1) + # making transparent
+  # creating different panels for each ant species
   facet_wrap(~ species_name,
+             # adding headers of ant species
              labeller = labeller(
              species_name = c(
                  "Crematogaster sjostedti" = "C. sjostedti",
                  "Crematogaster mimosae"   = "C. mimosae",
                  "Crematogaster nigriceps" = "C. nigriceps"))) +
+  # creating custom colors of lines, ribbons, and points
   scale_color_manual(values = c(
     "Crematogaster sjostedti" = "seagreen4",
     "Crematogaster mimosae" = "purple", 
@@ -184,7 +206,8 @@ ggplot(data = nests_clean,
     "Crematogaster mimosae"   = "purple",
     "Crematogaster nigriceps" = "skyblue")) +
 scale_x_continuous(limits = c(0, 600), # set x axis to full range of tree height
-                   breaks = c(0, 200, 400, 600)) +
+                   breaks = c(0, 200, 400, 600)) + # even breaks from 600 cm
+# relabelling x- and y- axes
 labs (x = "Tree height (cm)",
       y = "Probability of nest occurrence") +
 # changed theme from default
@@ -208,7 +231,7 @@ ggpredict(model2,
                     "species_name"))
 ```
 
-## k. Interpret your results
+## k. Interpret your results!!!
 
 Ant species and tree height interact to predict probability of nest occurrence. As Whistling thorn tree height increases, the probability of nest occurrence also increases. 
 
@@ -232,19 +255,66 @@ The effect of tree height on nest occurance probability is stronger for Crematog
 
 ## b. Designing an analysis
 
--  correlation between sleep and productivity level
+The research question I asked was *Does the amount of sleep I get affect my productivity?* and so I will be performing a Spearman's rank correlation test to determine if there is a relationship between sleep and productivity levels to answer if sleep is related to productivity. Both of these variables are continuous and independent of each other. Given that the there is not a linear relationship between variables and a small sample size, a non-parametric version of a correlation test is appropriate compared to a parametric version.
     
     
-
 ## c. Check any assumptions and run your analysis
+```{r}
+# creating new object from my_data
+mydata_clean <- mydata |> 
+  # cleaning names
+  clean_names() |> 
+  # dropping na values
+  drop_na() |> 
+  # making productivity larger numbers, ), convert column to numeric,
+  # instead of character
+  mutate(productivity = as.numeric(productivity),
+         productivity_hun = productivity*100)
+```
+
+### Checking assumptions
+#### Check 1: monotonic relationship between variables 
+```{r}
+ggplot(data = mydata_clean,
+       mapping = aes(x = sleep_mins,
+                     y = productivity)) +
+  geom_point()
+```
+### Running analysis
+
+```{r}
+#| warning: false
+# running correlation test
+cor.test(mydata_clean$productivity_hun, mydata_clean$sleep_mins, # variables productivity levels and sleep in mins
+         method = "spearman") # running Spearman's rank  based on assumptions
+```
 
 ## d. Create a visualization
+```{r}
+# base layer: ggplot using clean personal data
+ggplot(mydata_clean,
+       mapping = aes(x = sleep_mins, # x axis: amonunt of sleep
+                     y = productivity_hun)) + # y- axis: productivity level
+  # first layer: points to show observations 
+  geom_point(color = "mediumpurple4", # making points
+             alpha = 0.4) + # adjusting transparency
+  # second layer: showing trend
+  geom_smooth(method = "lm",
+              color = "orangered",
+              fill = "orangered",
+              alpha = 0.2) +
+  labs(x = "Amount of sleep (mins)",
+       y = "Productivity level (ratio of tasks completed\nto minutes spent working)") +
+  theme_classic()
+```
+
+
 
 ## e. Write a caption
 
 ## f. Write about your results
 
-
+There was no statsitcally significant relationship between amount of sleep and productivity level (Spearman's rank, $\rho$ = -0.15, S = 5197.3, p = 0.41, $\alpha$ = 0.05). Although correlation coefficient ($\rho$ = -0.15) suggests a weak negative relationship, the large p-value suggests that this difference statistically different from chance which could be due to small sample size and high variability in the data. 
 
 
 
