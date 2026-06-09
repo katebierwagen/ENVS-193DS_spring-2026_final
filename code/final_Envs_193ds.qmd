@@ -49,7 +49,8 @@ One additional variable that could influence the probability of American Avocet 
 ```{r}
 # creating new object to clean and wrangle data
 nests_clean <- nest |> 
-  # filtering to only include ant species C. mimosae, C. sjostedti, and C. nigriceps
+  # filtering to only include ant species C. mimosae, C. sjostedti, 
+  # and C. nigriceps
    filter(ant_species %in% c("RRB", "AB", "BBR")) |> 
   # creating new column with full scientific name
   mutate(species_name = recode_values(
@@ -285,7 +286,8 @@ ggplot(data = mydata_clean,
 ```{r}
 #| warning: false
 # running correlation test
-cor.test(mydata_clean$productivity_hun, mydata_clean$sleep_mins, # variables productivity levels and sleep in mins
+cor.test(mydata_clean$productivity_hun, mydata_clean$sleep_mins, # variables 
+# productivity levels and sleep in mins
          method = "spearman") # running Spearman's rank  based on assumptions
 ```
 
@@ -304,7 +306,8 @@ ggplot(mydata_clean,
               fill = "orangered",
               alpha = 0.2) +
   labs(x = "Amount of sleep (mins)",
-       y = "Productivity level (ratio of tasks completed\nto minutes spent working)") +
+       y = "Productivity level (ratio of tasks completed
+       \nto minutes spent working)") +
   theme_classic()
 ```
 
