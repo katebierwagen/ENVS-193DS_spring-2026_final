@@ -36,7 +36,7 @@ variable: native plant cover
 ## c. Further analysis
 
 # Problem 2. Data analysis
-## a. Clean and wrangle - *make sure to revisit reordering*
+## a. Clean and wrangle 
 ```{r}
 # creating new object to clean and wrangle data
 nests_clean <- nest |> 
@@ -75,12 +75,14 @@ The 1s in the column case control means that the tree contained a nest and the 0
 
 ### Tree height
 
-Acacia tree height is a continuous variable
-
+Whistling thorn tree height, measured in centimeters, is a continuous variable. The probability of bird nest occurrence would likely increase as tree height increases since there higher trees would be less accessible to ground-level predators. This information was found in paragraphs 3 and 4 of the introduction section. 
 
 
 ### Acacia Ant species
 
+Acacia ant species is a categorical variable with three different leveles in our model (*C. mimosea*, *C. nigriceps*, and *C. sjostedti*). Each ant species provides different benefits to the tree and ecosystem. Ant species, like *C. mimosae* and *C. nigriceps*, that defend against herbivores greatly will probably increase the probability of nest occurrence as there are less large predators for the bird nests. This information was found in paragraphs 2 and 3 in the introduction section. 
+
+**edit**
 ## d. Table of models
 
 | Model Number | Tree Height | Ant Species |   Model Description              |
@@ -118,9 +120,13 @@ AICc(
   arrange(AICc)
 ```
 
-The best model as determined by Akaike's Information Criterion (AIC) is model 2 as it explains the most variation in the response variable with the fewest predictor variables.
+The best model as determined by Akaike's Information Criterion (AIC) is the model with the interaction term between ant species and tree height as it explains the most variation in the nest occurrence in the simplest format.
 
-**ask about summary**
+
+```{r}
+# displaying summary for best model
+summary(model2)
+```
 
 ## g. Check the diagnostics
 
@@ -131,18 +137,14 @@ The best model as determined by Akaike's Information Criterion (AIC) is model 2 
 plot(simulateResiduals(model2))
 ```
 
-**describe output**
-
-- no significant outliers
-- 
+From the residuals, the data is uniformally distributed as the plot follows the reference line and outliers do not have significant influence on the data since the lines follow the bands and are relatively flat. 
 
 ## h. Visualize the model predictions
-**ask ab data be pretified**
 
 ```{r}
 preds <- ggpredict(
   model2,
-  terms = c("height_cm", "species_name")) |> 
+  terms = c("height_cm[all]", "species_name")) |> 
   rename(height_cm = x,
          species_name = group)
 ```
@@ -154,7 +156,7 @@ ggplot(data = nests_clean,
                      y = case_control )) +
   geom_point(aes(color = species_name),
              shape = 21,
-             alpha = 0.4) +
+             alpha = 0.5) + 
   geom_line(data = preds,
             mapping = aes(x = height_cm,
                           y = predicted,
@@ -177,28 +179,44 @@ ggplot(data = nests_clean,
     "Crematogaster sjostedti" = "seagreen4",
     "Crematogaster mimosae" = "purple", 
     "Crematogaster nigriceps" = "skyblue")) +
-scale_fill_manual(values = c(
-  "Crematogaster sjostedti" = "seagreen4",
-  "Crematogaster mimosae"   = "purple",
-  "Crematogaster nigriceps" = "skyblue")) +
+  scale_fill_manual(values = c(
+    "Crematogaster sjostedti" = "seagreen4",
+    "Crematogaster mimosae"   = "purple",
+    "Crematogaster nigriceps" = "skyblue")) +
 scale_x_continuous(limits = c(0, 600), # set x axis to full range of tree height
                    breaks = c(0, 200, 400, 600)) +
 labs (x = "Tree height (cm)",
       y = "Probability of nest occurrence") +
 # changed theme from default
+theme_classic() +
 # removed legend
 theme(legend.position = "none") +
+# removing grid lines and grey background
 theme(panel.grid = element_blank(),
       panel.background = element_blank())
 ```
 
-
-
 ## i. Write a caption for your figure.
+*Figure 1.* **Probability of Nest Occurrence increases as tree height increases across all three ant species.** Points represent individual observations of nest occurrence (0 = no nest, 1 = nest present), with different colors representing different ant species. Lines represent predicted probability of nest occurrence using a binomial generalized linear model. Shaded ribbon represents 95% confidence interval around model predictions for each species. Data citation: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8373322
 
 ## j. Calculate model predictions
 
+```{r}
+# calculating predicted probability of nest occurence at a value of 600 cm
+ggpredict(model2,
+          terms = c("height_cm [600]",
+                    "species_name"))
+```
+
 ## k. Interpret your results
+
+Ant species and tree height interact to predict probability of nest occurrence. As Whistling thorn tree height increases, the probability of nest occurrence also increases. 
+
+The effect of tree height on nest occurance probability is stronger for Crematogaster nigriceps 
+
+
+
+
 
 # Problem 3. Affective and exploratory visualizations
 
@@ -214,8 +232,8 @@ theme(panel.grid = element_blank(),
 
 ## b. Designing an analysis
 
-- single linear regression between sleep mins and productivity level
-      - ask about sleep mins because it can be continuous but i measured it in discrete?
+-  correlation between sleep and productivity level
+    
     
 
 ## c. Check any assumptions and run your analysis
