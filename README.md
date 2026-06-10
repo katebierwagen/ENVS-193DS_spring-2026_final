@@ -9,4 +9,4 @@ There is a `data` folder in which data files (nests and personal data) are store
 There is a `code` folder in which all code for generalized linear models, visualizations, and correlation tests are stored.
 
 Rendered output
-The rendered .pdf for the homework assignment is: [here]
+The rendered .pdf for the homework assignment is: [here](https://github.com/katebierwagen/ENVS-193DS_spring-2026_final/blob/main/code/final_Envs_193ds.pdf)
