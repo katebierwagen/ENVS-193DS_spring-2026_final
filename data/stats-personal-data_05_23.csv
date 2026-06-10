@@ -1,0 +1,39 @@
+5/16,time spent on homework (mins),number of tasks completed,"amount of sleep (hours, minutes)",Location,class,caffeine_intake,with_friends,task,productivity,sleep_mins
+04/27,46,1,9:44:00,home,"bl st 6, ",no,no,read,0.02173913043,584.00
+04/27,55,1,9:44:00,school,envs 155,yes,no,study,0.01818181818,584.00
+04/27,61,1,9:44:00,cafe,envs 155 ,yes,no,study,0.01639344262,584.00
+4/28,89,2,7:31:00,cafe,phys,yes,no,study,0.02247191011,451.00
+4/28,95,1,7:31:00,home,envs 193ds,no,yes,homework,0.01052631579,451.00
+4/29,130,1,7:21:00,school,envs 193ds,yes,no,homework,0.007692307692,441.00
+4/29,40,1,7:21:00,school,envs 193ds,no,no,homework,0.025,441.00
+4/30,89,1,7:12:00,school,envs 193ds,no,yes,homework,0.01123595506,432.00
+05/04,85,1,7:04,home,envs 193ds,yes,no,homework,0.01176470588,424.00
+05/05,84,0,9:10,home,envs 155,no,yes,homework,0,550.00
+05/08,69,1,8:02,home,envs 193ds,yes,no,homework,0.01449275362,482.00
+05/08,55,1,6:19,cafe,envs 155,yes,yes,homework,0.01818181818,379.00
+05/08,73,0,6:19,home,bl st 6,yes,no,homework,0,379.00
+5/10,160,1,10:50,cafe,earth 176,yes,yes,homework,0.00625,650.00
+5/11,64,1,7:57,home,earth 176,no,no,homework,0.015625,477.00
+5/11,82,2,7:57,school,bl st 6,yes,no,homework,0.0243902439,477.00
+5/11,120,1,7:57,home,ensv 193ds,no,yes,homework,0.008333333333,477.00
+5/12,93,1,7:55,home,bl st 6,no,no,homework,0.01075268817,475.00
+5/16,125,1,7:06,home,envs 155,no,no,homework,0.008,426.00
+5/17,130,2,6:23,school,ensv 193ds,yes,yes,homework,0.01538461538,383.00
+5/18,165,2,8:14,cafe,bl st 6,yes,yes,homework,0.01212121212,494.00
+5/19,100,3,8:01,school,envs 193ds,no,yes,homework,0.03,481.00
+5/19,105,1,8:01,cafe,envs 193ds,no,yes,homework,0.009523809524,481.00
+5/20,63,3,6:13,school,envs 193ds ,no,no,homework,0.04761904762,373.00
+5/20,30,2,6:13,home,envs 193ds,no,no,homework,0.06666666667,373.00
+5/21,48,1,7:32,home,envs 155,no,no,homework,0.02083333333,452.00
+5/21,55,2,7:32,school,envs 193ds,no,no,homework,0.03636363636,452.00
+5/22,68,2,7:44,home,envs 193ds,no,no,work/applications,0.02941176471,464.00
+5/22,45,1,7:44,home,envs 193ds,no,no,homework,0.02222222222,464.00
+5/23,97,2,7:39,cafe,envs 193ds,yes,no,homework,0.0206185567,459.00
+,,,,,,,,,#DIV/0!,0.00
+,,,,,,,,,#DIV/0!,0.00
+,,,,,,,,,#DIV/0!,0.00
+,,,,,,,,,#DIV/0!,0.00
+,,,,,,,,,#DIV/0!,0.00
+,,,,,,,,,#DIV/0!,0.00
+,,,,,,,,,#DIV/0!,0.00
+,,,,,,,,,#DIV/0!,0.00
