@@ -89,12 +89,9 @@ The 1s in the column case control means that the tree contained a nest and the 0
 Whistling thorn tree height, measured in centimeters, is a continuous variable. The probability of bird nest occurrence would likely increase as tree height increases since there higher trees would be less accessible to ground-level predators. This information was found in paragraphs 3 and 4 of the introduction section. 
 
 
-### Acacia Ant species!!!
+### Acacia Ant species
 
-Acacia ant species is a categorical variable with three different leveles in our model (*C. mimosea*, *C. nigriceps*, and *C. sjostedti*). Each ant species provides different benefits to the tree and ecosystem. Ant species, like *C. mimosae* and *C. nigriceps*, that defend against herbivores greatly will probably increase the probability of nest occurrence as there are less large predators for the bird nests. This information was found in paragraphs 2 and 3 in the introduction section. 
-
-**edit**
-
+Acacia ant species is a categorical variable with three different leveles in our model (*C. mimosea*, *C. nigriceps*, and *C. sjostedti*). Each ant species provides different benefits to the tree and ecosystem. Ant species, like *C. mimosae* and *C. nigriceps*, that have higher aggression compared to other acacia ant species will probably increase the probability of nest occurrence as there are less large predators for the bird nests. This information was found in paragraphs 2 and 3 in the introduction section. 
 
 
 ## d. Table of models
@@ -157,9 +154,11 @@ From the residuals, the data is uniformly distributed as the plot follows the re
 ## h. Visualize the model predictions
 
 ```{r}
+# creating new object for predictions
 preds <- ggpredict(
-  model2,
-  terms = c("height_cm[all]", "species_name")) |> 
+  model2, # using correct model
+  terms = c("height_cm[all]", "species_name")) |> # predictors
+  # renaming columns to fit data 
   rename(height_cm = x,
          species_name = group)
 ```
@@ -220,8 +219,9 @@ theme(panel.grid = element_blank(),
       panel.background = element_blank())
 ```
 
-## i. Write a caption for your figure.
-*Figure 1.* **Probability of Nest Occurrence increases as tree height increases across all three ant species.** Points represent individual observations of nest occurrence (0 = no nest, 1 = nest present), with different colors representing different ant species. Lines represent predicted probability of nest occurrence using a binomial generalized linear model. Shaded ribbon represents 95% confidence interval around model predictions for each species. Data citation: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8373322
+## i. Write a caption for your figure
+
+*Figure 1.* **Probability of Nest Occurrence increases as tree height increases across all three ant species.** Points represent individual observations of nest occurrence (0 = no nest, 1 = nest present), with different colors representing different ant () species. Lines represent predicted probability of nest occurrence using a binomial generalized linear model. Shaded ribbon represents 95% confidence interval around model predictions for each species. Data citation: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8373322
 
 ## j. Calculate model predictions
 
@@ -234,12 +234,7 @@ ggpredict(model2,
 
 ## k. Interpret your results!!!
 
-Ant species and tree height interact to predict probability of nest occurrence. As Whistling thorn tree height increases, the probability of nest occurrence also increases. 
-
-The effect of tree height on nest occurance probability is stronger for Crematogaster nigriceps 
-
-
-
+Ant species and tree height interact to predict probability of nest occurrence. As Whistling thorn tree height increases, the probability of nest occurrence also increases across all three ant species, this effect differs depending on ant species. At the tallest tree height in the dataset, 600 cm, the predicted probability for nest occurrence was highest for *C. nigricps* (1.00, 95% CI: [1.00,1.00]), followed by *C. mimosae* (0.74, 95% CI: [0.48, 0.90]), and lowest for *C. ajostedti* (0.20, 95% CI:[0.00, 0.99]). As seen in Figure 1, the steepest increase in nest probability with tree height occurs in trees with *C. nigricepts*. Biologically, this means that birds are more likley to select taller trees occupied by agressive ant species like *C. nigriceps* and *C. mimosae* for nesting as they can deter large herbivores from the tree.
 
 
 # Problem 3. Affective and exploratory visualizations
@@ -250,7 +245,7 @@ The effect of tree height on nest occurance probability is stronger for Crematog
 
 - Both of my visualizations utilize color to differentiate categorical variables such as work location. Additionally, both visualizations represent all 30 observations, just represented differently. 
 
-- The main pattern that is visible in both visualizations is that when I worked at school, I had a higher productivity level than when I worked at any other place like the cafe or home. **FINISH THIS BASED ON AFFECTIVE VISUALIZATION**
+- The main pattern that is visible in both visualizations is that when I worked at school, I had a higher productivity level than when I worked at any other place like the cafe or home. This pattern is the same throughout visualizations as you can see there's more z's in the affective visualization and higher median on the explanatory visualization.  
 
 - The main feedback I got in workshop was to make the variables more clear and be more clear with the overarching message of the data. I implemented this feedback by making the cloud size dependent on productivity level, so it was clear to see if there was a relationship between my variables and productivity levels. The decision to kept the suggestion was based on the fact that it helped convey the message behind the results better and was more clear for the reader. 
 
@@ -281,6 +276,7 @@ ggplot(data = mydata_clean,
                      y = productivity)) +
   geom_point()
 ```
+
 ### Running analysis
 
 ```{r}
@@ -293,6 +289,8 @@ cor.test(mydata_clean$productivity_hun, mydata_clean$sleep_mins, # variables
 
 ## d. Create a visualization
 ```{r}
+#| message: false
+#| warning: false
 # base layer: ggplot using clean personal data
 ggplot(mydata_clean,
        mapping = aes(x = sleep_mins, # x axis: amonunt of sleep
