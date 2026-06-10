@@ -260,6 +260,19 @@ The research question I asked was *Does the amount of sleep I get affect my prod
     
 ## c. Check any assumptions and run your analysis
 ```{r}
+# creating new object from my_data
+mydata_clean <- mydata |> 
+  # cleaning names
+  clean_names() |> 
+  # dropping na values
+  drop_na() |> 
+  # making productivity larger numbers, ), convert column to numeric,
+  # instead of character
+  mutate(productivity = as.numeric(productivity),
+         productivity_hun = productivity*100)
+```
+
+```{r}
 #| fig-width: 6
 #| fig-height: 6
 # base layer: ggplot using cleaned data
