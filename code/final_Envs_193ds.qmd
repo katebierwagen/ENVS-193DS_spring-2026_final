@@ -1,10 +1,14 @@
 ---
 title: "ENVS 193DS Final"
-format: pdf
+format: 
+    pdf:
+      toc: true
 author: "Kate Bierwagen"
 date: "2026-06-09"
+
 ---
 
+# Set Up
 ```{r}
 #| message: false
 #| warning: false
@@ -221,18 +225,18 @@ theme(panel.grid = element_blank(),
 
 ## i. Write a caption for your figure
 
-*Figure 1.* **Probability of Nest Occurrence increases as tree height increases across all three ant species.** Points represent individual observations of nest occurrence (0 = no nest, 1 = nest present), with different colors representing different ant () species. Lines represent predicted probability of nest occurrence using a binomial generalized linear model. Shaded ribbon represents 95% confidence interval around model predictions for each species. Data citation: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8373322
+**Figure 1. Probability of Nest Occurrence increases as tree height increases across all three ant species.** Points represent individual observations of nest occurrence (0 = no nest, 1 = nest present), with different colors representing different ant () species. Lines represent predicted probability of nest occurrence using a binomial generalized linear model. Shaded ribbon represents 95% confidence interval around model predictions for each species. Data citation: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8373322
 
 ## j. Calculate model predictions
 
 ```{r}
-# calculating predicted probability of nest occurence at a value of 600 cm
+# calculating predicted probability of nest occurrence at a value of 600 cm
 ggpredict(model2,
           terms = c("height_cm [600]",
                     "species_name"))
 ```
 
-## k. Interpret your results!!!
+## k. Interpret your results
 
 Ant species and tree height interact to predict probability of nest occurrence. As Whistling thorn tree height increases, the probability of nest occurrence also increases across all three ant species, this effect differs depending on ant species. At the tallest tree height in the dataset, 600 cm, the predicted probability for nest occurrence was highest for *C. nigricps* (1.00, 95% CI: [1.00,1.00]), followed by *C. mimosae* (0.74, 95% CI: [0.48, 0.90]), and lowest for *C. ajostedti* (0.20, 95% CI:[0.00, 0.99]). As seen in Figure 1, the steepest increase in nest probability with tree height occurs in trees with *C. nigricepts*. Biologically, this means that birds are more likley to select taller trees occupied by agressive ant species like *C. nigriceps* and *C. mimosae* for nesting as they can deter large herbivores from the tree.
 
@@ -256,66 +260,35 @@ The research question I asked was *Does the amount of sleep I get affect my prod
     
 ## c. Check any assumptions and run your analysis
 ```{r}
-# creating new object from my_data
-mydata_clean <- mydata |> 
-  # cleaning names
-  clean_names() |> 
-  # dropping na values
-  drop_na() |> 
-  # making productivity larger numbers, ), convert column to numeric,
-  # instead of character
-  mutate(productivity = as.numeric(productivity),
-         productivity_hun = productivity*100)
-```
-
-### Checking assumptions
-#### Check 1: monotonic relationship between variables 
-```{r}
+#| fig-width: 6
+#| fig-height: 6
+# base layer: ggplot using cleaned data
 ggplot(data = mydata_clean,
-       mapping = aes(x = sleep_mins,
-                     y = productivity)) +
-  geom_point()
+       mapping = aes(x = sleep_mins, # x axis: sleep recorded 
+                     y = productivity_hun)) + # y axis: ratio of tasks 
+  # compeleted to minutes spent on work
+  # first layer: points to display scatter plot
+    geom_point(color = "seagreen4",  # changing color of points from default
+               size = 1.5,  # changing size of points
+               alpha = 0.9) + # changing trasnparency of point
+  # adding title, relabeling x- and y- axes
+  labs(title = "Relationsip Between Sleep and Productivity of Work",
+       x = "Amount of Sleep (mins)",
+       y = "Productivity (ratio of tasks completed\nto minutes spent working)") +
+  scale_x_continuous(breaks = seq(300, 700, by = 50)) + # setting x axis ticks
+  # every 50 mins
+  scale_y_continuous(breaks = seq(0, 8, by = 2)) + # setting y axis ticks every 
+  # 2 ratio to reduce visual clutter
+  # changing theme from default
+  theme_classic() 
 ```
-
-### Running analysis
-
-```{r}
-#| warning: false
-# running correlation test
-cor.test(mydata_clean$productivity_hun, mydata_clean$sleep_mins, # variables 
-# productivity levels and sleep in mins
-         method = "spearman") # running Spearman's rank  based on assumptions
-```
-
-## d. Create a visualization
-```{r}
-#| message: false
-#| warning: false
-# base layer: ggplot using clean personal data
-ggplot(mydata_clean,
-       mapping = aes(x = sleep_mins, # x axis: amonunt of sleep
-                     y = productivity_hun)) + # y- axis: productivity level
-  # first layer: points to show observations 
-  geom_point(color = "mediumpurple4", # making points
-             alpha = 0.4) + # adjusting transparency
-  # second layer: showing trend
-  geom_smooth(method = "lm",
-              color = "orangered",
-              fill = "orangered",
-              alpha = 0.2) +
-  labs(x = "Amount of sleep (mins)",
-       y = "Productivity level (ratio of tasks completed
-       \nto minutes spent working)") +
-  theme_classic()
-```
-
-
 
 ## e. Write a caption
+**Figure 2. Distribution of productivity levels based on amount of sleep the previous night.** Data points in purple represent individual work sessions (n = 30, most recent observation May 23, 2026), with no consistent trend observed as sleep duration changes. The highest recorded ratio of tasks completed to minutes spent on work occurred with the one of the lowest sleep duration (373 minutes). 
 
 ## f. Write about your results
 
-There was no statsitcally significant relationship between amount of sleep and productivity level (Spearman's rank, $\rho$ = -0.15, S = 5197.3, p = 0.41, $\alpha$ = 0.05). Although correlation coefficient ($\rho$ = -0.15) suggests a weak negative relationship, the large p-value suggests that this difference statistically different from chance which could be due to small sample size and high variability in the data. 
+There was no statistically significant relationship between amount of sleep and productivity level (Spearman's rank, $\rho$ = -0.15, S = 5197.3, p = 0.41, $\alpha$ = 0.05). Although correlation coefficient ($\rho$ = -0.15) suggests a weak negative relationship, the large p-value suggests that this difference statistically different from chance which could be due to small sample size and high variability in the data. 
 
 
 
